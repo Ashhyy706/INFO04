@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Projetos de JS</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+      background: #e0e0e0; /* cinza claro */
+      margin: 0;
+      padding: 0;
+    }
+
+    nav {
+      background-color: #003366; /* azul escuro */
+      padding: 10px;
+      text-align: center;
+    }
+
+    nav a {
+      color: white;
+      text-decoration: none;
+      margin: 0 15px;
+      font-weight: bold;
+      transition: background 0.3s, padding 0.3s;
+      padding: 8px 12px;
+      border-radius: 4px;
+    }
+
+    nav a:hover {
+      background-color: #336699; /* azul mais claro no hover */
+    }
+
+    section {
+      display: none;
+      padding: 20px;
+      max-width: 600px;
+      margin: auto;
+      background: white;
+      margin-top: 20px;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+
+    input, select, button {
+      margin: 10px 0;
+      padding: 10px;
+      width: 100%;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+
+    button {
+      background-color: #336699; /* azul padrão */
+      color: white;
+      border: none;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    button:hover {
+      background-color: #003366; /* azul escuro no hover */
+    }
+
+    .resultado {
+      margin-top: 10px;
+      font-weight: bold;
+    }
+
+    h2 {
+      color: #003366; /* azul escuro para títulos */
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <a href="#" onclick="mostrar('idade')">Faixa Etária</a>
+    <a href="#" onclick="mostrar('estacao')">Estação do Ano</a>
+    <a href="#" onclick="mostrar('contador')">Contador</a>
+    <a href="#" onclick="mostrar('formas')">Formas Geométricas</a>
+    <a href="#" onclick="mostrar('jokenpo')">Jokenpo</a>
+  </nav>
+
+  <section id="idade">
+    <h2>Faixa Etária</h2>
+    <input type="number" id="anoNascimento" placeholder="Digite seu ano de nascimento">
+    <button onclick="verificarIdade()">Verificar</button>
+    <div class="resultado" id="resultadoIdade"></div>
+  </section>
+
+  <section id="estacao">
+    <h2>Estação do Ano</h2>
+    <input type="number" id="mes" placeholder="Digite o mês (1-12)">
+    <button onclick="verificarEstacao()">Verificar</button>
+    <div class="resultado" id="resultadoEstacao"></div>
+  </section>
+
+  <section id="contador">
+    <h2>Contador de 1 a 10</h2>
+    <button onclick="contar()">Contar</button>
+    <div class="resultado" id="resultadoContador"></div>
+  </section>
+
+  <section id="formas">
+    <h2>Formas Geométricas</h2>
+    <select id="forma">
+      <option value="">Escolha a forma</option>
+      <option value="quadrado">Quadrado</option>
+      <option value="retangulo">Retângulo</option>
+      <option value="circulo">Círculo</option>
+    </select>
+    <div id="inputsForma"></div>
+    <button onclick="calcularForma()">Calcular</button>
+    <div class="resultado" id="resultadoForma"></div>
+  </section>
+
+  <section id="jokenpo">
+    <h2>Jogo Jokenpo</h2>
+    <select id="escolhaJogador">
+      <option value="">Escolha</option>
+      <option value="pedra">Pedra</option>
+      <option value="papel">Papel</option>
+      <option value="tesoura">Tesoura</option>
+    </select>
+    <button onclick="jogar()">Jogar</button>
+    <div class="resultado" id="resultadoJokenpo"></div>
+  </section>
+
+  <script>
+    function mostrar(id) {
+      document.querySelectorAll('section').forEach(sec => sec.style.display = 'none');
+      document.getElementById(id).style.display = 'block';
+    }
+
+    function verificarIdade() {
+      const ano = parseInt(document.getElementById('anoNascimento').value);
+      const atual = new Date().getFullYear();
+      const idade = atual - ano;
+      let faixa = '';
+
+      if (idade < 12) faixa = 'Criança';
+      else if (idade < 18) faixa = 'Jovem';
+      else if (idade < 60) faixa = 'Adulto';
+      else faixa = 'Idoso';
+
+      document.getElementById('resultadoIdade').innerText = `Você tem ${idade} anos. Faixa etária: ${faixa}.`;
+    }
+
+    function verificarEstacao() {
+      const mes = parseInt(document.getElementById('mes').value);
+      let estacao = '';
+
+      if ([12,1,2].includes(mes)) estacao = 'Verão';
+      else if ([3,4,5].includes(mes)) estacao = 'Outono';
+      else if ([6,7,8].includes(mes)) estacao = 'Inverno';
+      else if ([9,10,11].includes(mes)) estacao = 'Primavera';
+      else estacao = 'Mês inválido';
+
+      document.getElementById('resultadoEstacao').innerText = `Estação: ${estacao}.`;
+    }
+
+    function contar() {
+      let texto = '';
+      for (let i=1; i<=10; i++) {
+        texto += i + ' ';
+      }
+      document.getElementById('resultadoContador').innerText = texto.trim();
+    }
+
+    document.getElementById('forma').addEventListener('change', function() {
+      const div = document.getElementById('inputsForma');
+      div.innerHTML = '';
+
+      if (this.value === 'quadrado') {
+        div.innerHTML = '<input type="number" id="lado" placeholder="Digite o lado">';
+      } else if (this.value === 'retangulo') {
+        div.innerHTML = '<input type="number" id="base" placeholder="Base"><input type="number" id="altura" placeholder="Altura">';
+      } else if (this.value === 'circulo') {
+        div.innerHTML = '<input type="number" id="raio" placeholder="Raio">';
+      }
+    });
+
+    function calcularForma() {
+      const forma = document.getElementById('forma').value;
+      let area = 0;
+
+      if (forma === 'quadrado') {
+        const lado = parseFloat(document.getElementById('lado').value);
+        area = lado * lado;
+      } else if (forma === 'retangulo') {
+        const base = parseFloat(document.getElementById('base').value);
+        const altura = parseFloat(document.getElementById('altura').value);
+        area = base * altura;
+      } else if (forma === 'circulo') {
+        const raio = parseFloat(document.getElementById('raio').value);
+        area = Math.PI * raio * raio;
+      }
+
+      area = area.toFixed(2);
+      const tipo = (parseInt(area) % 2 === 0) ? 'Par' : 'Ímpar';
+      let msg = `Área: ${area}. É ${tipo}.`;
+
+      if (tipo === 'Par') msg += ' Parabéns!';
+      else msg += ' Você perdeu o jogo.';
+
+      document.getElementById('resultadoForma').innerText = msg;
+    }
+
+    let pontos = 0;
+
+    function jogar() {
+      const escolhas = ['pedra', 'papel', 'tesoura'];
+      const maquina = escolhas[Math.floor(Math.random() * 3)];
+      const jogador = document.getElementById('escolhaJogador').value;
+
+      let resultado = `Você escolheu ${jogador}. Máquina escolheu ${maquina}. `;
+
+      if (jogador === maquina) {
+        resultado += 'Empate.';
+      } else if (
+        (jogador === 'pedra' && maquina === 'tesoura') ||
+        (jogador === 'papel' && maquina === 'pedra') ||
+        (jogador === 'tesoura' && maquina === 'papel')
+      ) {
+        pontos++;
+        resultado += `Você venceu! Pontos: ${pontos}.`;
+      } else {
+        resultado += 'Máquina venceu. Fim de jogo.';
+        pontos = 0;
+      }
+
+      document.getElementById('resultadoJokenpo').innerText = resultado;
+    }
+
+    // Exibir primeira seção como padrão
+    mostrar('idade');
+  </script>
+</body>
+</html>
