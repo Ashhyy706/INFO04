@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Sistema Integrado</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      background-color: #f9f9f9;
+      color: #333;
+    }
+
+    header {
+      background-color: #4CAF50;
+      color: white;
+      padding: 15px;
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    header button {
+      background: white;
+      color: #4CAF50;
+      border: 2px solid white;
+      border-radius: 4px;
+      padding: 10px 20px;
+      cursor: pointer;
+      font-weight: bold;
+      transition: background 0.2s, color 0.2s;
+    }
+
+    header button:hover, header button.active {
+      background: #45a049;
+      color: white;
+    }
+
+    main {
+      padding: 20px;
+      max-width: 600px;
+      margin: auto;
+    }
+
+    .section {
+      display: none;
+    }
+
+    .visible {
+      display: block;
+    }
+
+    ul {
+      list-style-type: none;
+      padding: 0;
+    }
+
+    li {
+      display: flex;
+      align-items: center;
+      margin: 8px 0;
+    }
+
+    li input[type="checkbox"] {
+      margin-right: 10px;
+      transform: scale(1.2);
+    }
+
+    .concluida {
+      text-decoration: line-through;
+      color: gray;
+    }
+
+    button.action {
+      background: #4CAF50;
+      color: white;
+      border: none;
+      padding: 8px 12px;
+      margin: 5px 2px;
+      cursor: pointer;
+      border-radius: 4px;
+      transition: background 0.2s;
+    }
+
+    button.action:hover {
+      background: #45A049;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <button id="btn-tarefas" onclick="mostrarSecao('tarefas')">Gerenciar Tarefas</button>
+  <button id="btn-clinica" onclick="mostrarSecao('clinica')">Atendimento Clínica</button>
+</header>
+
+<main>
+  <div id="tarefas" class="section">
+    <h2>Minhas Tarefas</h2>
+    <button class="action" onclick="gerenciarTarefas(tarefas, 'adicionar')">Adicionar Tarefa</button>
+    <button class="action" onclick="gerenciarTarefas(tarefas, 'remover')">Remover Concluídas</button>
+    <button class="action" onclick="gerenciarTarefas(tarefas, 'listar')">Ver Pendentes</button>
+    <ul id="listaTarefas"></ul>
+  </div>
+
+  <div id="clinica" class="section">
+    <h2>Simulador da Clínica</h2>
+    <button class="action" onclick="executarClinica()">Iniciar Atendimento</button>
+  </div>
+</main>
+
+<script>
+  // mostra a seção selecionada e destaca o botão
+  function mostrarSecao(id) {
+    document.querySelectorAll('.section').forEach(sec => sec.classList.remove('visible'));
+    document.getElementById(id).classList.add('visible');
+    document.querySelectorAll('header button').forEach(btn => btn.classList.remove('active'));
+    document.getElementById('btn-' + id).classList.add('active');
+  }
+
+  // tarefas
+  let tarefas = [
+    { descricao: "Estudar JS", concluida: false },
+    { descricao: "Lavar a louça", concluida: false },
+    { descricao: "Fazer exercícios", concluida: true }
+  ];
+
+  function gerenciarTarefas(lista, acao) {
+    if (acao === "adicionar") {
+      let desc = prompt("Digite a descrição da tarefa:");
+      if (desc) lista.push({ descricao: desc, concluida: false });
+    } else if (acao === "remover") {
+      for (let i = lista.length - 1; i >= 0; i--) {
+        if (lista[i].concluida) lista.splice(i, 1);
+      }
+    } else if (acao === "listar") {
+      let pendentes = lista.filter(t => !t.concluida);
+      let msg = pendentes.length
+        ? "Tarefas pendentes:\n" + pendentes.map(t => "- " + t.descricao).join("\n")
+        : "Parabéns! Não há tarefas pendentes.";
+      alert(msg);
+    }
+    atualizarLista();
+  }
+
+  function atualizarLista() {
+    let ul = document.getElementById("listaTarefas");
+    ul.innerHTML = "";
+    tarefas.forEach((t, i) => {
+      let li = document.createElement('li');
+      li.innerHTML = `<input type="checkbox" onchange="toggle(${i})" ${t.concluida ? 'checked' : ''}>
+                      <span class="${t.concluida ? 'concluida' : ''}">${t.descricao}</span>`;
+      ul.appendChild(li);
+    });
+  }
+
+  function toggle(i) {
+    tarefas[i].concluida = !tarefas[i].concluida;
+    atualizarLista();
+  }
+
+  // clínica
+  function executarClinica() {
+    let nome = prompt("Qual é o seu nome?");
+    alert("Olá " + nome + ", bem-vindo!");
+
+    let idade = parseInt(prompt("Qual a sua idade?"));
+    alert(idade >= 18 ? "Você pode autorizar atendimentos." : "Você precisa de um responsável.");
+
+    let num = parseInt(prompt("Digite um número da sorte:"));
+    alert((num % 2 === 0) ? "Número par" : "Número ímpar");
+
+    let op = prompt("Operação (+ - * /):");
+    let a = parseFloat(prompt("1º valor:"));
+    let b = parseFloat(prompt("2º valor:"));
+    let res;
+    if (op === '+') res = a + b;
+    else if (op === '-') res = a - b;
+    else if (op === '*') res = a * b;
+    else if (op === '/' && b !== 0) res = a / b;
+    else res = "Erro";
+    alert("Resultado: " + res);
+
+    let mes = prompt("Digite o mês:").toLowerCase();
+    let est;
+    if (["dezembro","janeiro","fevereiro"].includes(mes)) est = "Verão";
+    else if (["março","abril","maio"].includes(mes)) est = "Outono";
+    else if (["junho","julho","agosto"].includes(mes)) est = "Inverno";
+    else if (["setembro","outubro","novembro"].includes(mes)) est = "Primavera";
+    else est = "Mês inválido";
+    alert("Estação: " + est);
+
+    let n = parseInt(prompt("Digite número positivo:"));
+    if (n > 0) {
+      let pares = [];
+      let c = n + 1;
+      while (pares.length < 5) {
+        if (c % 2 === 0) pares.push(c);
+        c++;
+      }
+      alert("Próximos pares: " + pares.join(", "));
+    } else {
+      alert("Número precisa ser positivo!");
+    }
+
+    let idadeCao = parseInt(prompt("Idade do cachorro:"));
+    alert("Idade em anos humanos: " + (idadeCao * 7));
+
+    let forma = prompt("Forma (quadrado, triangulo, circulo):").toLowerCase();
+    let area;
+    if (forma === 'quadrado') {
+      let lado = parseFloat(prompt("Lado:"));
+      area = lado * lado;
+    } else if (forma === 'triangulo') {
+      let base = parseFloat(prompt("Base:"));
+      let alt = parseFloat(prompt("Altura:"));
+      area = base * alt / 2;
+    } else if (forma === 'circulo') {
+      let r = parseFloat(prompt("Raio:"));
+      area = Math.PI * r * r;
+    } else area = "Inválido";
+    alert("Área: " + area);
+
+    alert("Obrigado! Clínica agradece :)");
+  }
+
+  // inicializa a página
+  mostrarSecao('tarefas');
+  atualizarLista();
+</script>
+
+</body>
+</html>
